@@ -27,6 +27,8 @@ public class MyApp {
             "(name, email, password, phone, status, type, dislikeAmount, picture, id) values" +
             "(?,?,?,?,?,?,?,?,?)";
     private static String CREATE_SUB_CATEGORY = "insert into category(category, parentId) values (?,?)";
+    private static String LINK_IMAGES = "insert into adpicture" +
+            "(id, picture, adId, type) values (?,?,?,?)";
 
     private static String DELETE_USERS = "DELETE FROM user WHERE id > 0;";
     private static String DELETE_CATEGORY = "DELETE FROM category WHERE id > 0;";
@@ -47,19 +49,19 @@ public class MyApp {
         XWPFDocument advertDoc = new XWPFDocument(new FileInputStream("ADVERT_LIST.docx"));
         XWPFDocument categoryDoc = new XWPFDocument(new FileInputStream("CATEGORY_LIST.docx"));
 
-        deleteUsers(DELETE_USERS);
-        deleteCategory(DELETE_CATEGORY);
-        deleteAdvert(DELETE_ADVERT);
+        delete(DELETE_USERS);
+        delete(DELETE_CATEGORY);
+        delete(DELETE_ADVERT);
 
         createUser();
         createCategory(categoryDoc);
         createAdvert(advertDoc);
 
-        extractImages("ADVERT_LIST.docx");
+//        linkImagesToAdvert(advertDoc);
 
-//        updateUserId(UPDATE_USER_ID);
-//        updateCategoryId(UPDATE_CATEGORY_ID);
-//        updateAdvertisementId(UPDATE_ADVERTISEMENT_ID);
+//        update(UPDATE_USER_ID);
+//        update(UPDATE_CATEGORY_ID);
+//        update(UPDATE_ADVERTISEMENT_ID);
     }
 
     public static void createCategory(XWPFDocument docx) throws SQLException, ClassNotFoundException {
@@ -76,9 +78,7 @@ public class MyApp {
             preparedStatement.setInt(3, 0);
             preparedStatement.executeUpdate();
         }
-
         // Implement sub category query
-
         preparedStatement = connection.prepareStatement(CREATE_SUB_CATEGORY);
 
         for (int i = 0; i < xwpfTable.getRows().size(); i++) {
@@ -135,50 +135,31 @@ public class MyApp {
             preparedStatement.setString(1, x.getCell(1).getText());     //title
             preparedStatement.setString(2, x2.getCell(2).getText());    //text
             preparedStatement.setDate(3, date);                         //date
-            preparedStatement.setInt(4, randId);                         //categoryId
+            preparedStatement.setInt(4, randId);                        //categoryId
             preparedStatement.setInt(5, random.nextInt(100));           //price
             preparedStatement.setString(6, "UAH");                      //currency
             preparedStatement.setInt(7, userId);                        //userID
             preparedStatement.setString(8, "A");                        //status
-            preparedStatement.setInt(9, i + 1);                        //userID
+            preparedStatement.setInt(9, i + 1);                         //userID
             preparedStatement.executeUpdate();
         }
     }
 
-    private static void deleteUsers(String deleteUsers) throws SQLException, ClassNotFoundException {
-        connection = DataSource.getConnection();
-        preparedStatement = connection.prepareStatement(deleteUsers);
-        preparedStatement.executeUpdate();
-    }
+    public static void linkImagesToAdvert(XWPFDocument docx) throws SQLException, ClassNotFoundException {
+        extractImages("ADVERT_LIST.docx");
 
-    private static void deleteCategory(String deleteCategory) throws SQLException, ClassNotFoundException {
         connection = DataSource.getConnection();
-        preparedStatement = connection.prepareStatement(deleteCategory);
-        preparedStatement.executeUpdate();
-    }
+        preparedStatement = connection.prepareStatement(LINK_IMAGES);
 
-    private static void deleteAdvert(String deleteCategory) throws SQLException, ClassNotFoundException {
-        connection = DataSource.getConnection();
-        preparedStatement = connection.prepareStatement(deleteCategory);
-        preparedStatement.executeUpdate();
-    }
+        List<XWPFTable> tables = docx.getTables();
+        for (int i = 0; i < tables.size(); i++) {
+            preparedStatement.setInt(1, i + 1);                                                     // Picture ID
+            preparedStatement.setString(2, "src/main/resources/images/image_0" + i + ".jpg");       // Picture Path
+            preparedStatement.setInt(3, i + 1);                                                     // Advert ID
+            preparedStatement.setString(4, "M");                                                    // Picture Type
+            preparedStatement.executeUpdate();
+        }
 
-    public static void updateUserId(String UPDATE_USER_ID) throws SQLException, ClassNotFoundException {
-        connection = DataSource.getConnection();
-        preparedStatement = connection.prepareStatement(UPDATE_USER_ID);
-        preparedStatement.executeUpdate();
-    }
-
-    public static void updateCategoryId(String UPDATE_CATEGORY_ID) throws SQLException, ClassNotFoundException {
-        connection = DataSource.getConnection();
-        preparedStatement = connection.prepareStatement(UPDATE_CATEGORY_ID);
-        preparedStatement.executeUpdate();
-    }
-
-    public static void updateAdvertisementId(String UPDATE_ADVERTISEMENT_ID) throws SQLException, ClassNotFoundException {
-        connection = DataSource.getConnection();
-        preparedStatement = connection.prepareStatement(UPDATE_ADVERTISEMENT_ID);
-        preparedStatement.executeUpdate();
     }
 
     public static void extractImages(String src) {
@@ -202,5 +183,17 @@ public class MyApp {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void delete(String deleteQuery) throws SQLException, ClassNotFoundException {
+        connection = DataSource.getConnection();
+        preparedStatement = connection.prepareStatement(deleteQuery);
+        preparedStatement.executeUpdate();
+    }
+
+    public static void update(String updateQuery) throws SQLException, ClassNotFoundException {
+        connection = DataSource.getConnection();
+        preparedStatement = connection.prepareStatement(updateQuery);
+        preparedStatement.executeUpdate();
     }
 }
