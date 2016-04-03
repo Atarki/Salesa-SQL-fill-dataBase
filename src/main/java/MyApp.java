@@ -24,7 +24,7 @@ public class MyApp {
     private static String CREATE_CATEGORY = "insert into category" +
             "(id, category, parentId) values (?,?,?)";
     private static String CREATE_USER = "insert into user" +
-            "(name, email, password, phone, status, type, dislikeAmount, picture, id) values" +
+            "(id, name, email, password, phone, status, type, dislikeAmount, picture ) values" +
             "(?,?,?,?,?,?,?,?,?)";
     private static String CREATE_SUB_CATEGORY = "insert into category(category, parentId) values (?,?)";
     private static String LINK_IMAGES = "insert into adpicture" +
@@ -49,7 +49,7 @@ public class MyApp {
         XWPFDocument advertDoc = new XWPFDocument(new FileInputStream("ADVERT_LIST.docx"));
         XWPFDocument categoryDoc = new XWPFDocument(new FileInputStream("CATEGORY_LIST.docx"));
 
-//        delete(DELETE_USERS);
+        delete(DELETE_USERS);
 //        delete(DELETE_CATEGORY);
 //        delete(DELETE_ADVERT);
 
@@ -99,21 +99,26 @@ public class MyApp {
 
     public static void createUser() throws SQLException, ClassNotFoundException {
         //Create random users depends on userCount
-        int userCount = 5;
+        int userCount = 10;
+        String[] users = new String[]{"Alex Folkin", "John Tromvell", "Kate Patonik", "Robert Jn. Artur",
+                "Mary Ploter", "Nick Perum", "Solter Mirosh", "Jonny Mnimonik", " Rober Dawny", "Linda Burhurt"};
+        String[] emails = new String[]{"@live.com", "@gmail.com", "@yandex.ru", "@yahoo.com", "@i.ua", "@bigmir.net"};
+        String[] status = new String[]{"U", "B", "A"};
+        String[] type = new String[]{"A", "B", "G"};
+
         connection = DataSource.getConnection();
         preparedStatement = connection.prepareStatement(CREATE_USER);
         //Fill user data
         for (int i = 0; i < userCount; i++) {
-            String userName = "User_0" + i;
-            preparedStatement.setString(1, userName);
-            preparedStatement.setString(2, userName + "@example.com");
-            preparedStatement.setString(3, "password");
-            preparedStatement.setString(4, "0-900-0000000");
-            preparedStatement.setString(5, "U");
-            preparedStatement.setString(6, "A");
-            preparedStatement.setInt(7, random.nextInt(10));
-            preparedStatement.setString(8, "null");
-            preparedStatement.setInt(9, i + 1);
+            preparedStatement.setInt(1, i + 1);
+            preparedStatement.setString(2, users[i]);
+            preparedStatement.setString(3, users[i] + emails[random.nextInt(5)]);
+            preparedStatement.setString(4, users[i].replace(" ","") + random.nextInt(100) * 128 / 3 + status[random.nextInt(2)]);
+            preparedStatement.setString(5, "0-900-0000000");
+            preparedStatement.setString(6, status[random.nextInt(2)]);
+            preparedStatement.setString(7, type[random.nextInt(2)]);
+            preparedStatement.setInt(8, random.nextInt(10));
+            preparedStatement.setString(9, "null");
             preparedStatement.executeUpdate();
         }
     }
