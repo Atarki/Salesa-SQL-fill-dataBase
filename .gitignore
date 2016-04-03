@@ -72,7 +72,7 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 #
-
+/lib
 sqlite-jdbc-3.8.11.2
 /target
 *.db

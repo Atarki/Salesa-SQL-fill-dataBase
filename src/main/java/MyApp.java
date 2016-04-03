@@ -49,15 +49,15 @@ public class MyApp {
         XWPFDocument advertDoc = new XWPFDocument(new FileInputStream("ADVERT_LIST.docx"));
         XWPFDocument categoryDoc = new XWPFDocument(new FileInputStream("CATEGORY_LIST.docx"));
 
-        delete(DELETE_USERS);
-        delete(DELETE_CATEGORY);
-        delete(DELETE_ADVERT);
-
-        createUser();
-        createCategory(categoryDoc);
-        createAdvert(advertDoc);
-
-//        linkImagesToAdvert(advertDoc);
+//        delete(DELETE_USERS);
+//        delete(DELETE_CATEGORY);
+//        delete(DELETE_ADVERT);
+//
+//        createUser();
+//        createCategory(categoryDoc);
+//        createAdvert(advertDoc);
+//
+        linkImagesToAdvert(advertDoc);
 
 //        update(UPDATE_USER_ID);
 //        update(UPDATE_CATEGORY_ID);
