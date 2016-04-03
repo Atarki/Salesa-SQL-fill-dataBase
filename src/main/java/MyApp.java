@@ -52,11 +52,11 @@ public class MyApp {
 //        delete(DELETE_USERS);
 //        delete(DELETE_CATEGORY);
 //        delete(DELETE_ADVERT);
-//
-//        createUser();
-//        createCategory(categoryDoc);
-//        createAdvert(advertDoc);
-//
+
+        createUser();
+        createCategory(categoryDoc);
+        createAdvert(advertDoc);
+
         linkImagesToAdvert(advertDoc);
 
 //        update(UPDATE_USER_ID);
