@@ -18,17 +18,17 @@ public class MyApp {
     private static Random random = new Random();
     private static Connection connection;
     private static PreparedStatement preparedStatement;
-    private static String CREATE_ADVERT = "insert into advertisement" +
-            "(title, text, date, categoryId, price, currency, userId, status, id) values" +
+    private static String CREATE_ADVERT = "insert into advert" +
+            "(title, text, modificationDate, categoryId, price, currency, userId, status, id) values" +
             "(?,?,?,?,?,?,?,?,?);";
     private static String CREATE_CATEGORY = "insert into category" +
-            "(id, category, parentId) values (?,?,?)";
+            "(id, name, parentId) values (?,?,?)";
     private static String CREATE_USER = "insert into user" +
-            "(id, name, email, password, phone, status, type, dislikeAmount, picture ) values" +
+            "(id, name, email, password, phone, status, type, dislikeAmount, avatar) values" +
             "(?,?,?,?,?,?,?,?,?)";
-    private static String CREATE_SUB_CATEGORY = "insert into category(category, parentId) values (?,?)";
-    private static String LINK_IMAGES = "insert into adpicture" +
-            "(id, picture, adId, type) values (?,?,?,?)";
+    private static String CREATE_SUB_CATEGORY = "insert into category(name, parentId) values (?,?)";
+    private static String LINK_IMAGES = "insert into advertPicture" +
+            "(id, picture, advertId, type) values (?,?,?,?)";
 
     private static String DELETE_USERS = "DELETE FROM user WHERE id > 0;";
     private static String DELETE_CATEGORY = "DELETE FROM category WHERE id > 0;";
@@ -174,7 +174,9 @@ public class MyApp {
             List<XWPFPictureData> allPictures = docx.getAllPictures();
             Iterator<XWPFPictureData> iterator = allPictures.iterator();
 
+            File resourceFolder = new File("src/main/resources");
             File imagesFolder = new File("src/main/resources/images");
+            resourceFolder.mkdir();
             imagesFolder.mkdir();
 
             int i = 0;
