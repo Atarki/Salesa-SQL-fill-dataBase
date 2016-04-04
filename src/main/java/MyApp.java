@@ -103,8 +103,8 @@ public class MyApp {
         String[] users = new String[]{"Alex Folkin", "John Tromvell", "Kate Patonik", "Robert Jn. Artur",
                 "Mary Ploter", "Nick Perum", "Solter Mirosh", "Jonny Mnimonik", " Rober Dawny", "Linda Burhurt"};
         String[] emails = new String[]{"@live.com", "@gmail.com", "@yandex.ru", "@yahoo.com", "@i.ua", "@bigmir.net"};
-        String[] status = new String[]{"U", "B", "A"};
-        String[] type = new String[]{"A", "B", "G"};
+        String[] status = new String[]{"A", "B", "D"};
+        String[] type = new String[]{"U", "A"};
 
         connection = DataSource.getConnection();
         preparedStatement = connection.prepareStatement(CREATE_USER);
@@ -113,10 +113,10 @@ public class MyApp {
             preparedStatement.setInt(1, i + 1);
             preparedStatement.setString(2, users[i]);
             preparedStatement.setString(3, users[i] + emails[random.nextInt(5)]);
-            preparedStatement.setString(4, users[i].replace(" ","") + random.nextInt(100) * 128 / 3 + status[random.nextInt(2)]);
+            preparedStatement.setString(4, users[i].replace(" ", "") + random.nextInt(100) * 128 / 3 + status[random.nextInt(2)]);
             preparedStatement.setString(5, "0-900-0000000");
             preparedStatement.setString(6, status[random.nextInt(2)]);
-            preparedStatement.setString(7, type[random.nextInt(2)]);
+            preparedStatement.setString(7, type[random.nextInt(1)]);
             preparedStatement.setInt(8, random.nextInt(10));
             preparedStatement.setString(9, "null");
             preparedStatement.executeUpdate();
@@ -126,7 +126,8 @@ public class MyApp {
     public static void createAdvert(XWPFDocument docx) throws SQLException, ClassNotFoundException {
         connection = DataSource.getConnection();
         preparedStatement = connection.prepareStatement(CREATE_ADVERT);
-
+        String[] status = new String[]{"A", "H", "S", "D"};
+        String[] currency = new String[]{"UAH", "DOL", "CHF", "RUB", "YEN"};
         List<XWPFTable> tables = docx.getTables();
         for (int i = 0; i < tables.size(); i++) {
             XWPFTable table = tables.get(i);
@@ -142,9 +143,9 @@ public class MyApp {
             preparedStatement.setDate(3, date);                                           //date
             preparedStatement.setInt(4, Integer.parseInt(x.getCell(3).getText()));        //categoryId
             preparedStatement.setInt(5, random.nextInt(100));                             //price
-            preparedStatement.setString(6, "UAH");                                        //currency
+            preparedStatement.setString(6, currency[random.nextInt(4)]);                                        //currency
             preparedStatement.setInt(7, userId);                                          //userID
-            preparedStatement.setString(8, "A");                                          //status
+            preparedStatement.setString(8, status[random.nextInt(3)]);                    //status
             preparedStatement.setInt(9, i + 1);                                           //userID
             preparedStatement.executeUpdate();
         }
@@ -152,6 +153,7 @@ public class MyApp {
 
     public static void linkImagesToAdvert(XWPFDocument docx) throws SQLException, ClassNotFoundException {
         extractImages("ADVERT_LIST.docx");
+        String[] status = new String[]{"M", "R"};
 
         connection = DataSource.getConnection();
         preparedStatement = connection.prepareStatement(LINK_IMAGES);
@@ -161,7 +163,7 @@ public class MyApp {
             preparedStatement.setInt(1, i + 1);                                                     // Picture ID
             preparedStatement.setString(2, "src/main/resources/images/image_0" + i + ".jpg");       // Picture Path
             preparedStatement.setInt(3, i + 1);                                                     // Advert ID
-            preparedStatement.setString(4, "M");                                                    // Picture Type
+            preparedStatement.setString(4, status[random.nextInt(1)]);                              // Picture Type
             preparedStatement.executeUpdate();
         }
 
