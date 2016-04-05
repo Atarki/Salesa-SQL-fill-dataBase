@@ -138,7 +138,7 @@ public class MyApp {
             int randId = random.nextInt(12) + 1;
             int userId = random.nextInt(3) + 1;
 
-            preparedStatement.setString(1, x.getCell(1).getText());                       //title
+            preparedStatement.setString(1, x.getCell(2).getText());                       //title
             preparedStatement.setString(2, x2.getCell(2).getText());                      //text
             preparedStatement.setDate(3, date);                                           //date
             preparedStatement.setInt(4, Integer.parseInt(x.getCell(3).getText()));        //categoryId
